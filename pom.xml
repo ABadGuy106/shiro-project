@@ -11,6 +11,7 @@
     <modules>
         <module>shiro-hello</module>
         <module>shiro-myrealm</module>
+        <module>shiro-encipher</module>
     </modules>
 
 
