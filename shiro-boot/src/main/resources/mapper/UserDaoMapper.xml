@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.abadguy.dao.UserDao">
+
+    <insert id="save" parameterType="net.abadguy.entity.User">
+        insert into t_user values (#{id},#{userName},#{password},#{salt})
+    </insert>
+
+    <select id="findByUserName" parameterType="string" resultType="net.abadguy.entity.User">
+        select * from t_user where userName=#{userName}
+    </select>
+
+    <resultMap id="userMap" type="User">
+        <id column="userid" property="id"/>
+        <result column="username" property="userName"/>
+        <collection property="roles" javaType="list" ofType="Role">
+            <id column="roleid" property="id"/>
+            <result column="rolename" property="name"/>
+        </collection>
+
+    </resultMap>
+
+    <select id="getRolesfindByUserName" parameterType="string" resultMap="userMap" >
+        select
+	u.id userid,
+	u.userName username,
+	r.id roleid,
+	r.name rolename
+from
+	t_user u
+left join t_user_role ur on
+	u.id = ur.user_id
+left join t_role r on
+	ur.role_id = r.id
+where
+	u.userName = #{userName}
+    </select>
+
+    <select id="findPermsByRoleId" parameterType="int" resultType="Pers">
+        select
+	p.id,
+	p.name,
+	p.url,
+	r.name
+from
+	t_role r
+left join t_role_pers rp on
+	r.id = rp.role_id
+left join t_pers p on
+	p.id = rp.pers_id
+where
+	r.id = #{id}
+    </select>
+</mapper>
